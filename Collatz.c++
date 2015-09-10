@@ -36,16 +36,19 @@ pair<int, int> collatz_read (const string& s) {
 int collatz_eval (int i, int j) {
     
     // set i, j in increasing order
-    if (j < i){
-        int temp = i;
-        i = j; //i holds smaller value
-        j = temp; // j holds larger value
-    }
+    int c = 1;
+    int start, end;
     
+    // set i, j in increasing order
+    
+    start = min(i,j);
+    end = max(i,j);
+    
+   
     int n = 0;
     int l = 0;
     int max_c = 0;
-    for (l=i; l <=j; ++l) {
+   for (l=start; l <=end; ++l) {
 
         // calculate the cycle length for l
         int c = 1;
@@ -62,7 +65,7 @@ int collatz_eval (int i, int j) {
         
     } // for
 
-    return c;
+    return max_c;
 }
 
 // -------------
