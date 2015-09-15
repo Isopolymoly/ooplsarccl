@@ -34,76 +34,34 @@ pair<int, int> collatz_read (const string& s) {
 // ------------
 
 int collatz_eval (int i, int j) {
-    // <your code>
-    /// return max cycle length between integers i and j
-
-	int max_cycle_length = 0;
-	int l = 0;
-    	int c = 1;
-	int n = 0;
-
-
-	// switch as needed for increasing order i->j in for loop
-	if (j < i) {
-
-	// borrow n for a sec here as a temporary variable
-		n = i; // TEMP
-		i = j; // i is smaller of 2 input values 
-		j = n; // j takes larger of 2 input values
-
-	}
-
-
-	/// loop through from i to j, update max cycle length
-	//	go through loop once for i==j
-	for (l = i; l <= j; ++l) {
-
-	//cout << "next loop l=" << l << endl;
-
-
-	c = 1; // when input is [1,*], while loop is not executed, cycle length=1
-	n = l;
-    	while (n > 1) {
-        	if ((n % 2) == 0)
-            		n = (n / 2);
-        	else
-            		n = (3 * n) + 1;
-
-        	++c;
-		//cout << "updated n=" << n << endl;
- 	}
-
-		//cout << "c =" << c << " for n=" << n << endl;
-	if (c > max_cycle_length) {
-		max_cycle_length = c;
-		}
-
-
-	}
-		//cout << "returning max cycle length =" << max_cycle_length << endl;
-	return max_cycle_length;
-
-
-// nested function -- or move out? TODO
-
-/*
-// from examples/Collatz1.h
-int cycle_length (int n) {
-    assert(n > 0);
-    int c = 0;
-    while (n > 1) {
-        if ((n % 2) == 0)
-            n = (n / 2);
-        else
-            n = (3 * n) + 1;
-        ++c;}
-    assert(c > 0);
-    return c;}
-*/
-
-
-	
-
+    int c=1;
+    int start, end;
+    
+    // set i, j in increasing order
+    
+    start = min(i,j);
+    end = max(i,j);
+    
+   
+    int n = 0;
+    int l = 0;
+    int max_c = 0;
+    
+    for (l=start; l <=end; ++l) {
+// calculate the cycle length for l
+        c = 1;
+        n=l;  // 
+        while(n >1){
+            ++c;
+            if ((n % 2) == 0) { n = n/2; } 
+            else {  n = (3*n) +1; }
+        } // while
+        
+        if (c > max_c) { max_c = c; }
+        
+    } // for
+ 
+    return max_c;
 }
 
 // -------------
