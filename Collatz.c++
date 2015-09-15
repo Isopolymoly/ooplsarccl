@@ -58,7 +58,7 @@ int collatz_eval (int i, int j) {
 	//	go through loop once for i==j
 	for (l = i; l <= j; ++l) {
 
-	cout << "next loop l=" << l << endl;
+	//cout << "next loop l=" << l << endl;
 
 
 	c = 1; // when input is [1,*], while loop is not executed, cycle length=1
@@ -73,7 +73,7 @@ int collatz_eval (int i, int j) {
 		//cout << "updated n=" << n << endl;
  	}
 
-		cout << "c =" << c << " for n=" << n << endl;
+		//cout << "c =" << c << " for n=" << n << endl;
 	if (c > max_cycle_length) {
 		max_cycle_length = c;
 		}
