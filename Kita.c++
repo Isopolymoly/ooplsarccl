@@ -67,6 +67,8 @@ if (slength == 2) {
 }
 
 
+
+
 std::string s_reversed = s;
 std::reverse(s_reversed.begin(), s_reversed.end());
 
@@ -86,7 +88,30 @@ std::reverse(s_reversed.begin(), s_reversed.end());
 //}
   
 
-int half = slength  >> 1; //  check for 0 here
+// evens 
+//if (slength % 2 == 0) {
+//
+//
+//}
+
+
+
+// should not be zero as long as length >= 3
+unsigned int half = slength  >> 1; //  check for 0 here
+//int diff = 0;
+
+
+
+
+
+// if set difference is more than one character, FAIL with NA
+//
+// if set difference is one character, find the matching character from other half  and insert it
+// if set difference is zero, insert any character into middle
+//
+
+
+
 
 
 std::string piece = s.substr(0,half);
@@ -94,10 +119,74 @@ cout << "piece: " << piece << endl;
 cout << "s_reversed: " << s_reversed << endl;
 
 
-std::size_t s_found = s_reversed.find(piece,0);
+//std::size_t s_found = s_reversed.find(piece,0);
+//
+  
 
-cout << "found: " << s_found << endl;
 
+
+std::string left2 = s.substr(0,2);
+std::string right2 = s_reversed.substr(0,2);
+
+cout << "left2: " << left2 << " right2: " << right2 << endl;
+
+std::sort(left2.begin(), left2.end());
+std::sort(right2.begin(), right2.end());
+
+cout << " sorted left2: " << left2 << " right2: " << right2 << endl;
+
+
+
+// quick screening step to auto-fail non-palindromes
+// check end two characters from both sides of fold
+// if there is no intersection, it can't be a palindrome; FAIL with NA
+
+std::string intersect_check, check;
+
+std::set_intersection(left2.begin(),left2.end(), right2.begin(), right2.end(),  std::back_inserter(intersect_check) );
+
+cout << "set intersection: " <<  intersect_check << endl;
+
+// stack overflow 7936654
+//std::set_union(left2.begin(),left2.end(), right2.begin(), right2.end(), std::back_inserter(check));
+//
+//cout << "set union: " <<  check << endl;
+
+
+if (intersect_check.length() <1) {
+
+	return palindrome;  // NA
+}
+
+
+// at this point in the flow, s.length >= 3, and it's not an auto-fail
+//  now get serious about finding palindromes
+//
+std::string lefthalf = s.substr(0,half);
+std::string righthalf = s_reversed.substr(0,half);
+
+cout << "lefthalf: " << lefthalf << " righthalf: " << righthalf << endl;
+
+std::sort(lefthalf.begin(), lefthalf.end());
+std::sort(righthalf.begin(), righthalf.end());
+
+cout << " sorted lefthalf: " << lefthalf << " righthalf: " << righthalf << endl;
+
+
+
+std::string check_half;
+
+std::set_intersection(lefthalf.begin(),lefthalf.end(), righthalf.begin(), righthalf.end(),  std::back_inserter(check_half) );
+
+cout << "half intersection echeck:" << check_half << endl;
+
+if (check_half.length() < half-1) {
+
+	return palindrome; // NA
+
+}
+
+///////
 
 
 
@@ -108,8 +197,10 @@ cout << "found: " << s_found << endl;
 
 
 //std::cout << palindrome.length() << endl;
-std::cout << s.length() << endl;
+//std::cout << s.length() << endl;
 
+
+	palindrome.assign("possible");
 
 
 
