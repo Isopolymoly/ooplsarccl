@@ -187,8 +187,10 @@ if (check_half.length() < half-1) {
 }
 
 ///////
+///   set buckets have right contents, not necesarily in order for palindrome
 
 
+	palindrome.assign("possible");
 
 
 
@@ -200,11 +202,39 @@ if (check_half.length() < half-1) {
 //std::cout << s.length() << endl;
 
 
-	palindrome.assign("possible");
+
+
+if ( s.compare(0,half, s_reversed, 0, half) == 0) {
+
+	//cout << "found match: " << s << ", " << s_reversed <<"." << endl;
+	palindrome.assign(s);
+
+	// must insert a letter;
+	//    if s is even # characters, insert any character into new middle 
+	//    if s is odd # characters, insert repeated middle character into new middle 
+	// -->  insert repeated middle character into middle
+
+
+	palindrome.insert( half, s,half,1 );
+
+    return palindrome;
+}
+
+// else check character by character
+//
+
+else {
+//cout << "s=" << s << "; srev= " << s_reversed << endl;
+
+
+
+}
 
 
 
     return palindrome;
+
+
 }
 
 // -------------
