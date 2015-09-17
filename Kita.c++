@@ -221,40 +221,102 @@ else {
 //    if that's a match, replicate and check for palindrome
 //    otherwise, it can't be made a palindrome, FAIL with NA
 //
-bool bubble_taken = FALSE;
+bool bubble_used = 0;
+
 for (unsigned int i=0; i< half; ++i) {
-	cout << "i:" << i << endl;
-	cout << s.at(i) << endl;
+	//cout << "i:" << i << endl;
+	//cout << "s(i) = " <<  s.at(i) << endl;
+
+	// compare s(i) with s_reversed(i)
 	if ( s.compare(i,1, s_reversed, i, 1) != 0) {
-	// these 2 didn't match...try ith one on left with next one in on right side
-		if (s.compare(i,1, s_reversed, i+1,1) !=0) {
-		// these didn't match either.  it could be a fail, or could need an insertion here.
 
-	// FIXME here under construction
-		palindrome.assign(s);
-		palindrome.insert(i,s_reversed, i,1);
-
-
+	// mismtch
+	//
+	    if (bubble_used) {
 		// more than one letter off, game over
 		palindrome.assign("NA");
 		return palindrome;
-	}
+		}
+
+	//otherwise, if bubble is available, determine where to inesrt a character
+
+	//  ith one on left with next one in on right side
+		if (s.compare(i,1, s_reversed, i+1,1) ==0) {
+		// match:  insert right side ith character before left side ith character
+		
+
+		palindrome.assign(s);
+		palindrome.insert(i,s_reversed, i,1);
+		bubble_used=1;
+		//cout << " missing l:i inserted, now: " << palindrome << endl;
+
+		} // match l:i, r:i+1
+		else {
+		// mismatch:  insert left side ith before right side ith
+
+
+//FIXME
 	palindrome.assign(s);
-	palindrome.insert(i,s_reversed, i,1);
-	cout << "inserted, now: " << palindrome << endl;
-    return palindrome;
+
+	palindrome.insert(slength-i, s,i,1);
+		bubble_used=1;
+
+	//cout << "missing r:i inserted, now: " << palindrome << endl;
+
+
+	} // insert left i into right before i
+
+
+	// TODO check  again at i 
+	//--i; // infinite olop
+
+
+
 	
-}
-// if they match, go on to the next i
-
-}
-
-} //else check each
-
-    return palindrome;
 
 
-}
+// after using bubble, check full palindrome
+//     if it matches, exit wiht palindrome
+//     if it doesn't match, exit with NA  (no more insertions/moves allowed)
+//
+// //  wasteful step for long strings, TODO optimize 
+//
+
+
+
+std::string p_r_check = palindrome;
+std::reverse(p_r_check.begin(), p_r_check.end());
+
+	// check to see if palindrome has mirror symmetry after insertion
+	//   if there are any mismatches at this point, FAIL with NA
+
+	if (palindrome.compare( p_r_check) != 0) {
+		palindrome.assign("NA");
+	}
+
+	return palindrome;
+
+
+} // s(i) != s_r(i+1)
+
+// if ith character is a match, continue on to next character
+
+
+}  // for i  // s(i) matches s_reversed(i) ==> continue loop to next character
+
+// if we got this far without inserting, it's a problem FIXME
+// //  if this is a true palindrome without inserting, should have caught earlier case
+// // if it's not a true palindrome without inserting, should not get here
+    return "error";
+
+
+} //else check each character (main chunk for inserting & checking)
+
+// if we got this far, something is not right. TODO add test
+    return "error";
+
+
+} // kita eval
 
 // -------------
 // kita_print
