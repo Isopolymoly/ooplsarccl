@@ -72,7 +72,7 @@ if (slength == 2) {
 std::string s_reversed = s;
 std::reverse(s_reversed.begin(), s_reversed.end());
 
-   cout << s_reversed << endl;
+   //cout << s_reversed << endl;
 
 
 // compare first half of s with first half of reversed
@@ -115,8 +115,8 @@ unsigned int half = slength  >> 1; //  check for 0 here
 
 
 std::string piece = s.substr(0,half);
-cout << "piece: " << piece << endl;
-cout << "s_reversed: " << s_reversed << endl;
+////cout << "piece: " << piece << endl;
+//cout << "s_reversed: " << s_reversed << endl;
 
 
 //std::size_t s_found = s_reversed.find(piece,0);
@@ -128,12 +128,12 @@ cout << "s_reversed: " << s_reversed << endl;
 std::string left2 = s.substr(0,2);
 std::string right2 = s_reversed.substr(0,2);
 
-cout << "left2: " << left2 << " right2: " << right2 << endl;
+//cout << "left2: " << left2 << " right2: " << right2 << endl;
 
 std::sort(left2.begin(), left2.end());
 std::sort(right2.begin(), right2.end());
 
-cout << " sorted left2: " << left2 << " right2: " << right2 << endl;
+//cout << " sorted left2: " << left2 << " right2: " << right2 << endl;
 
 
 
@@ -145,7 +145,7 @@ std::string intersect_check, check;
 
 std::set_intersection(left2.begin(),left2.end(), right2.begin(), right2.end(),  std::back_inserter(intersect_check) );
 
-cout << "set intersection: " <<  intersect_check << endl;
+//cout << "set intersection: " <<  intersect_check << endl;
 
 // stack overflow 7936654
 //std::set_union(left2.begin(),left2.end(), right2.begin(), right2.end(), std::back_inserter(check));
@@ -165,12 +165,12 @@ if (intersect_check.length() <1) {
 std::string lefthalf = s.substr(0,half);
 std::string righthalf = s_reversed.substr(0,half);
 
-cout << "lefthalf: " << lefthalf << " righthalf: " << righthalf << endl;
+//cout << "lefthalf: " << lefthalf << " righthalf: " << righthalf << endl;
 
 std::sort(lefthalf.begin(), lefthalf.end());
 std::sort(righthalf.begin(), righthalf.end());
 
-cout << " sorted lefthalf: " << lefthalf << " righthalf: " << righthalf << endl;
+//cout << " sorted lefthalf: " << lefthalf << " righthalf: " << righthalf << endl;
 
 
 
@@ -178,7 +178,7 @@ std::string check_half;
 
 std::set_intersection(lefthalf.begin(),lefthalf.end(), righthalf.begin(), righthalf.end(),  std::back_inserter(check_half) );
 
-cout << "half intersection echeck:" << check_half << endl;
+//cout << "half intersection echeck:" << check_half << endl;
 
 if (check_half.length() < half-1) {
 
@@ -193,17 +193,6 @@ if (check_half.length() < half-1) {
 	palindrome.assign("possible");
 
 
-
-	//int same = s.compare(0,1, s.at(1));// compare 0th character to 1st character
-		//palindrome.insert(1,"x");
-
-
-//std::cout << palindrome.length() << endl;
-//std::cout << s.length() << endl;
-
-
-
-
 if ( s.compare(0,half, s_reversed, 0, half) == 0) {
 
 	//cout << "found match: " << s << ", " << s_reversed <<"." << endl;
@@ -212,25 +201,55 @@ if ( s.compare(0,half, s_reversed, 0, half) == 0) {
 	// must insert a letter;
 	//    if s is even # characters, insert any character into new middle 
 	//    if s is odd # characters, insert repeated middle character into new middle 
-	// -->  insert repeated middle character into middle
+	// -->  insert repeated middle character into new middle
 
 
-	palindrome.insert( half, s,half,1 );
+	palindrome.insert( half+1, s,half,1 );
 
     return palindrome;
 }
 
 // else check character by character
-//
+//   ... at this point, there are the right characters, maybe not in order
 
 else {
 //cout << "s=" << s << "; srev= " << s_reversed << endl;
+//
 
 
+// compare endpoints.  If they're not equal, compare left end to right end -2
+//    if that's a match, replicate and check for palindrome
+//    otherwise, it can't be made a palindrome, FAIL with NA
+//
+bool bubble_taken = FALSE;
+for (unsigned int i=0; i< half; ++i) {
+	cout << "i:" << i << endl;
+	cout << s.at(i) << endl;
+	if ( s.compare(i,1, s_reversed, i, 1) != 0) {
+	// these 2 didn't match...try ith one on left with next one in on right side
+		if (s.compare(i,1, s_reversed, i+1,1) !=0) {
+		// these didn't match either.  it could be a fail, or could need an insertion here.
+
+	// FIXME here under construction
+		palindrome.assign(s);
+		palindrome.insert(i,s_reversed, i,1);
+
+
+		// more than one letter off, game over
+		palindrome.assign("NA");
+		return palindrome;
+	}
+	palindrome.assign(s);
+	palindrome.insert(i,s_reversed, i,1);
+	cout << "inserted, now: " << palindrome << endl;
+    return palindrome;
+	
+}
+// if they match, go on to the next i
 
 }
 
-
+} //else check each
 
     return palindrome;
 
