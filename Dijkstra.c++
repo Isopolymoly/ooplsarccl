@@ -110,11 +110,11 @@ std::deque<int> dijkstra_eval ( int n, map<int, map<int,int> > &connections ) {
 		if(bestDist==huge_number) break;
 
 
-		cout << "check row " << u << endl ; // << " map: " << connections[u] << " ";
+		//cout << "check row " << u << endl ; // << " map: " << connections[u] << " ";
 		for (auto const &columns : connections[u]){
 			if (!done[columns.first]) {
-				cout << "     check v:" << columns.first <<  " ";
-				cout <<  "    check w:" <<columns.second << endl;
+				//cout << "     check v:" << columns.first <<  " ";
+				//cout <<  "    check w:" <<columns.second << endl;
 				// update distance_to_v0ance between not-done connections and u
 				if (distance_to_v0[columns.first] > distance_to_v0[u] + columns.second ) {
 					distance_to_v0[columns.first] = distance_to_v0[u] + columns.second;
