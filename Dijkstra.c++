@@ -41,28 +41,31 @@ std::deque<int> dijkstra_eval ( int n, map<int, map<int,int> > &connections ) {
 	// www.cs.cornell.edu/~wdtseng/icpc/notes/connections_part2.pdf	
 
 	// *scaling* need up to 10^5 elements in arrays
-	std::vector<int> distance_to_v0;
-	//std::unordered_map<int, bool> done;
+	//std::vector<int> distance_to_v0;
+	std::unordered_map<int, int> distance_to_v0;
 	std::unordered_map<int, int> via;
 	std::deque<int> path = {n+1}; // converting back to 1:n notation (from 0:n-1 indices)
 
-	for (int i = 0; i <= n; i++ ) {
-		distance_to_v0.push_back(huge_number); // 2<=n<=10^5; 1 <= wi <= 10^6
+	for (int i = 1; i <= n; i++ ) {
+		distance_to_v0[i] = huge_number; // 2<=n<=10^5; 1 <= wi <= 10^6
+		//cout << "distance_to_v0[" << i << "]: " << distance_to_v0[i] << endl;
 	} // for i
 
-	distance_to_v0[0]= 0; // vertex 1 is starting point, stored in arrays [0]
+	distance_to_v0[0]= 0; // starting point
 
 	while (true) {
 		int u = -1;
 		int bestDist= huge_number;
 
-		for(int i=0; i<=n; i++) {
+		for(auto const &d0 : distance_to_v0) {
+			//cout <<  "dista[ " << d0.first << "] => " << d0.second << endl;
 
-			if ( (distance_to_v0[i] > -1) && (distance_to_v0[i] < bestDist)) {
-				u=i; // found a vertex with a shorter distance_to_v0
-				bestDist = distance_to_v0[i];
+			if ( d0.second < bestDist) {
+				u=d0.first; // found a vertex with a shorter distance_to_v0
+				bestDist = d0.second;
+				//cout << " update: d0.first "<< " ==> " << d0.second << endl;
 			} // not done, and distance_to_v0ance is less than best so far
-		} // for i
+		} // for every not-done vertex
 
 		// once all vertices are makred as  done, an iteration of the while loop will skip the int i loop and break here
 		if(bestDist==huge_number) break;
@@ -70,20 +73,28 @@ std::deque<int> dijkstra_eval ( int n, map<int, map<int,int> > &connections ) {
 
 		//cout << "check row " << u << endl ; // << " map: " << connections[u] << " ";
 		for (auto const &columns : connections[u]){
-			if (distance_to_v0[columns.first] > -1) {
-				//cout << "     check v:" << columns.first <<  " ";
-				//cout <<  "    check w:" <<columns.second << endl;
+			//cout << "     check v:" << columns.first <<  " ";
+			//cout <<  "    check w:" <<columns.second << endl;
+		 //cout << (distance_to_v0.count(columns.first))  << endl;
+
+			if (distance_to_v0.count(columns.first)) {
+				//cout << "count v" << endl;
+				//cout <<  distance_to_v0[columns.first] << endl;
+				//cout <<  distance_to_v0[u] << endl;
+				//cout <<  columns.second << endl;
 				// update distance_to_v0ance between not-done connections and u
 				if (distance_to_v0[columns.first] > distance_to_v0[u] + columns.second ) {
 					distance_to_v0[columns.first] = distance_to_v0[u] + columns.second;
 					via[columns.first] = u;
+					//cout << "distance to v0" << distance_to_v0[columns.first] << endl;
 				}
 			} // if not done
 		} // for each v in sparse matrix (auto iterator)
 
 
 		//done[u] = true;
-		distance_to_v0[u] = -1; // marked as done
+		//distance_to_v0[u] = -1; // marked as done
+		distance_to_v0.erase(u);
 
 		//cout << "done for u:" << u << endl;
 
