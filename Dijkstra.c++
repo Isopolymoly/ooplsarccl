@@ -23,13 +23,20 @@
 
 
 using namespace std;
+using std::vector;
+
+/* References:
+ * cplusplus.com
+     expecially	 cplusplus.com/forum/articles/7459
+ www.cs.cornell.edu/~wdtseng/icpc/notes/connections_part2.pdf	
+*/
 
 
 // ------------
 // dijkstra_eval
 // ------------
 
-std::deque<int> dijkstra_eval ( int n, int connections[][6]  ) {
+std::deque<int> dijkstra_eval ( int n, vector<vector<int> > &connections ) {
 // n has been decremented to match indices bfeore it's passed to this function
     
   //cout << "hello, world" << endl;
@@ -59,7 +66,7 @@ std::vector<int> distance_to_v0;
 std::vector<bool> done;
 std::vector<int> via;
 std::deque<int> path = {n+1}; // converting back to 1:n notation (from 0:n-1 indices)
-cout << "path init: " << path[0] << endl;
+//cout << "path init: " << path[0] << endl;
 
 
 
@@ -128,42 +135,46 @@ cout << "path init: " << path[0] << endl;
 
 // end cornell.edu notes
 
-	cout << "via: " ;
-	for (int z = 0; z <= n ; z++){ cout << via[z] << " "; }
+	//cout << "via: " ;
+	//for (int z = 0; z <= n ; z++){ cout << via[z] << " "; }
 
 
 	int step = n;
 
 	while ( step != 0 ){
 		//cout << "this step: " << step << endl;
+
+
+		if (via[step] == huge_number) {
+			path[0] = -1;
+			break;
+		}
+
 		path.push_front(via[step] + 1); // convert back to [1 to n] style from [0 to n-1]
 		step = via[step];
+
+		
 		//cout << "next step: " << step << endl;
 	}
 	
 
-	// to print output: pop off front to back, and start with 1, end with n
-	//
-	//cout << "path: " ;
-
-	//cout << endl;
-
-
-	 
-// TODO update ret types to return via
-	//return distance_to_v0[n];
-	//
-	//
+	
 	std::deque<int>::size_type  dq_size = path.size();
-
-	cout << endl;
-	cout << endl;
-	cout << endl;
-	cout << "final path: " ;
-	for(unsigned i=0; i < dq_size; ++i){
-    		cout <<  path[i]  << " ";
-	}
-	cout << endl;
+	//cout << "dq size:" <<  dq_size << endl;
+	//cout << "path[1] :" <<  path[0] << endl;
+	
+	if  ((dq_size > 1) &&  (path[0] == 1) )  {
+	
+		for(unsigned i=0; i < dq_size; ++i){
+    			cout <<  path[i]  << " ";
+		}
+		cout << endl;
+		}
+		else {
+			path[0]=-1; // in case of no path to connect vertex 1 to vertex n, return -1
+    			cout <<  path[0]  << endl;
+		
+		}
 
 	return path;
 
@@ -223,11 +234,17 @@ void dijkstra_solve (istream& r, ostream& w) {
 	const int  m = nm.second;
 
 
-	int connections[6][6];
+	//
 
-	cout << "adjusted n=" << n << endl;
+	vector<vector<int> > connections;
+	connections.resize(n+1);  // # rows
+
+
+	//cout << "adjusted n=" << n << endl;
 
 	for (int i=0; i <= n; ++i) {
+		connections[i].resize(n+1);  //  columns
+
 		for (int j=0; j <= n; ++j) {
 		connections[i][j] = -1; 
 		}
@@ -237,7 +254,7 @@ void dijkstra_solve (istream& r, ostream& w) {
 
 	for (int i = 0; i < m; ++i) {
      		getline(r, input_line);
-	cout << "next line: " << input_line << endl;
+	//cout << "next line: " << input_line << endl;
 
     	std::vector<int> edge = dijkstra_read_a_b_w(input_line);
 	int a = edge[0] -1; // rename vectors to match indices in connections
@@ -259,8 +276,8 @@ void dijkstra_solve (istream& r, ostream& w) {
 		}
 		cout << endl;
 	}
-*/
         
+*/
 
         std::deque<int>  path = dijkstra_eval(n, connections);
 
