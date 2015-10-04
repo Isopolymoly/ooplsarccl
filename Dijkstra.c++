@@ -95,7 +95,7 @@ std::deque<int> dijkstra_eval ( int n, map<int, map<int,int> > &connections ) {
 		for(int i=0; i<=n; i++) {
 
 			//cout << ", i=" << i << " done = " << done[i] << " distance_to_v0=" << distance_to_v0[i] << endl;
-			if (!done[i] && distance_to_v0[i] < bestDist) {
+			if (!done[i] && (distance_to_v0[i] < bestDist)) {
 
 
 				u=i; // found a vertex with a shorter distance_to_v0
@@ -110,24 +110,18 @@ std::deque<int> dijkstra_eval ( int n, map<int, map<int,int> > &connections ) {
 		if(bestDist==huge_number) break;
 
 
-		for (int v = 0; v <= n; v++) {
-			if (!done[v]) {
-				// check if connections[u][v] exists
-				if (connections.count(u) && connections[u].count(v)) {
-
-					//cout << "connections[" <<u << "][" <<v<< "] = " << connections[u][v] << endl;
-					// update distance_to_v0ance between not-done connections and u
-					if (distance_to_v0[v] > distance_to_v0[u] + connections[u][v] ) {
-						distance_to_v0[v] = distance_to_v0[u] + connections[u][v];
-						via[v] = u;
-						//cout << " via update: vertex " << v << " -> " << u << endl;
-					}
-					//cout << "for v loop, distance_to_v0["<<v<<"] = " <<  distance_to_v0[v] << endl;
-
-				} // connections[u][v] exists
-
-			} // if not done
-		} // for v
+		cout << "check row " << u << endl ; // << " map: " << connections[u] << " ";
+		for (auto const &columns : connections[u]){
+			if (!done[columns.first]) {
+				cout << "     check v:" << columns.first <<  " ";
+				cout <<  "    check w:" <<columns.second << endl;
+				// update distance_to_v0ance between not-done connections and u
+				if (distance_to_v0[columns.first] > distance_to_v0[u] + columns.second ) {
+					distance_to_v0[columns.first] = distance_to_v0[u] + columns.second;
+					via[columns.first] = u;
+				}
+		} // if not done
+		} // for each v in sparse matrix (auto iterator)
 
 
 		done[u] = true;
