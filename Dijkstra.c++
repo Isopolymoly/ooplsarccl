@@ -18,6 +18,8 @@
 #include <algorithm>  // so 198199
 
 #include <limits>
+#include <deque>
+#include <vector>
 
 
 using namespace std;
@@ -27,117 +29,143 @@ using namespace std;
 // dijkstra_eval
 // ------------
 
-int dijkstra_eval ( int n, int graph[][6]  ) {
+std::deque<int> dijkstra_eval ( int n, int connections[][6]  ) {
+// n has been decremented to match indices bfeore it's passed to this function
     
   //cout << "hello, world" << endl;
 
-int int_max = std::numeric_limits<int>::max();
+int huge_number = std::numeric_limits<int>::max() -1;
 
 
-//cout << "int_max = " << int_max << endl;
+//cout << "huge_number = " << huge_number << endl;
 
 
 /*
-cout << "graph: " << endl;
-for (int i=0; i < n; ++i) {
-	for (int j=0; j < n; ++j) {
+cout << "connections: " << endl;
+for (int i=0; i <= n; ++i) {
+	for (int j=0; j <= n; ++j) {
 
-		cout << graph[i][j] ;
+		cout << connections[i][j] ;
 	}
 	cout << endl;
 }
 */
 
 
-// www.cs.cornell.edu/~wdtseng/icpc/notes/graph_part2.pdf	
+// www.cs.cornell.edu/~wdtseng/icpc/notes/connections_part2.pdf	
 
-// FIXME need up to 10^5 elements in arrays
-int dist[128];
-int path[128];
-bool done[128];
+// *scaling* need up to 10^5 elements in arrays
+std::vector<int> distance_to_v0;
+std::vector<bool> done;
+std::vector<int> via;
+std::deque<int> path = {n+1}; // converting back to 1:n notation (from 0:n-1 indices)
+cout << "path init: " << path[0] << endl;
 
 
 
-//void dijkstra( ) {
-	for (int i = 0; i < n; i++ ) {
-		dist[i] = int_max; // 2<=n<=10^5; 1 <= wi <= 10^6
-		done[i] = false;
+	for (int i = 0; i <= n; i++ ) {
+		distance_to_v0.push_back(huge_number); // 2<=n<=10^5; 1 <= wi <= 10^6
+		via.push_back(huge_number); // 
+		done.push_back(false);
 	} // for i
 
-	dist[0]=0; // vertex 1 is starting point, stored in arrays [0]
+	distance_to_v0[0]= 0; // vertex 1 is starting point, stored in arrays [0]
 	
+	//cout << "distance_to_v0 init to : " ;
+	//for (int z = 0; z <= n ; z++){ cout << distance_to_v0[z] << " "; }
 
 
-	int this_step = 0;
 	while (true) {
 
-	int u = -1, bestDist= int_max;
+	int u = -1, bestDist= huge_number;
 
 	//cout << "while loop first round n=" << n << ", u=" << u << endl;
-	//cout << "  done[0] = " << done[0] << " dist=" << dist[0] << endl;
+	//cout << "  done[0] = " << done[0] << " distance_to_v0=" << distance_to_v0[0] << endl;
 
-	for(int i=0; i<n; i++) {
+	for(int i=0; i<=n; i++) {
 
-	//cout << ", i=" << i << " done = " << done[i] << " dist=" << dist[i] << endl;
-		 if (!done[i] && dist[i] < bestDist) {
+	//cout << ", i=" << i << " done = " << done[i] << " distance_to_v0=" << distance_to_v0[i] << endl;
+		 if (!done[i] && distance_to_v0[i] < bestDist) {
 
 
-		u=i; // found a vertex with a shorter distance
-		bestDist = dist[i];
-	cout << "while loop new u=" << u << endl;
-	cout << " new bestDist == " << bestDist << endl;
+		u=i; // found a vertex with a shorter distance_to_v0
+		bestDist = distance_to_v0[i];
+	//cout << "while loop new u=" << u << endl;
+	//cout << " new bestDist == " << bestDist << endl;
 
-		} // not done, and distance is less than best so far
+		} // not done, and distance_to_v0ance is less than best so far
 	} // for i
 
-	// once everything is done, an iteration of the while loop will skip the int i loop and break here
-	if(bestDist==int_max) break;
+	// once all vertices are makred as  done, an iteration of the while loop will skip the int i loop and break here
+	if(bestDist==huge_number) break;
 
 
-	for (int v = 0; v < n; v++) if (!done[v] && graph[u][v] != -1) {
-		// update distance between not-done connections and u
-		if (dist [v] > dist[u] + graph[u][v] ) {
-			dist[v] = dist[u] + graph[u][v];
+	for (int v = 0; v <= n; v++) if (!done[v] && connections[u][v] != -1) {
+		//cout << "connections[" <<u << "][" <<v<< "] = " << connections[u][v] << endl;
+		// update distance_to_v0ance between not-done connections and u
+		if (distance_to_v0[v] > distance_to_v0[u] + connections[u][v] ) {
+			distance_to_v0[v] = distance_to_v0[u] + connections[u][v];
+			via[v] = u;
+			//cout << " via update: vertex " << v << " -> " << u << endl;
 			}
-	cout << "for v loop, dist["<<v<<"] = " <<  dist[v] << endl;
+	//cout << "for v loop, distance_to_v0["<<v<<"] = " <<  distance_to_v0[v] << endl;
 
 
 	} // for v
 	done[u] = true;
 
-/* not here, this catches every vertex
-	path[this_step] = u+1;
-	cout << "next on path:" << path[this_step] << endl;
-	++this_step;
-*/
+	//cout << "done for u:" << u << endl;
+
+// keep track of path from vertex 0 to this vertex u, when it's done
 
 	} // while true
 
 
-	cout << "distance:" << dist[n-1] << endl;
-	cout << "done:" << done[n-1] << endl;
-	cout << "path:" ;
-
-	for (int i=0; i<this_step; ++i){
-	cout << path[i] << endl;
-
-		}
-
-
-//} // dijkstra loop
-
+	//cout << "distance_to_v0ance:" << distance_to_v0[n] << endl;
+	//cout << "done n:" << done[n] << endl;
 
 
 
 // end cornell.edu notes
 
+	cout << "via: " ;
+	for (int z = 0; z <= n ; z++){ cout << via[z] << " "; }
 
 
+	int step = n;
+
+	while ( step != 0 ){
+		//cout << "this step: " << step << endl;
+		path.push_front(via[step] + 1); // convert back to [1 to n] style from [0 to n-1]
+		step = via[step];
+		//cout << "next step: " << step << endl;
+	}
+	
+
+	// to print output: pop off front to back, and start with 1, end with n
+	//
+	//cout << "path: " ;
+
+	//cout << endl;
 
 
+	 
+// TODO update ret types to return via
+	//return distance_to_v0[n];
+	//
+	//
+	std::deque<int>::size_type  dq_size = path.size();
 
-	return dist[n-1];
+	cout << endl;
+	cout << endl;
+	cout << endl;
+	cout << "final path: " ;
+	for(unsigned i=0; i < dq_size; ++i){
+    		cout <<  path[i]  << " ";
+	}
+	cout << endl;
 
+	return path;
 
 
 } // dijkstra eval
@@ -146,8 +174,14 @@ bool done[128];
 // dijkstra_print
 // -------------
 
-void dijkstra_print (ostream& w,  int shortest_distance) {
-    w << shortest_distance  << endl;
+void dijkstra_print (ostream& w,  std::deque<int> path) {
+
+	std::deque<int>::size_type  dq_size = path.size();
+
+	for(unsigned i=0; i < dq_size; ++i){
+    		w <<  path[i]  << " ";
+	}
+	w << endl;
 }
 
 
@@ -185,16 +219,18 @@ void dijkstra_solve (istream& r, ostream& w) {
 
 	getline(r, input_line);
     	const pair<int,int> nm = dijkstra_read_n_m(input_line);
-	const int  n = nm.first;
+	const int  n = nm.first -1;
 	const int  m = nm.second;
 
 
-	int graph[6][6];
+	int connections[6][6];
 
-	for (int i=0; i < n; ++i) {
-		for (int j=0; j < n; ++j) {
-		graph[i][j] = -1; 
-	}
+	cout << "adjusted n=" << n << endl;
+
+	for (int i=0; i <= n; ++i) {
+		for (int j=0; j <= n; ++j) {
+		connections[i][j] = -1; 
+		}
 	}
 
 
@@ -204,29 +240,32 @@ void dijkstra_solve (istream& r, ostream& w) {
 	cout << "next line: " << input_line << endl;
 
     	std::vector<int> edge = dijkstra_read_a_b_w(input_line);
-	int a = edge[0] -1;
+	int a = edge[0] -1; // rename vectors to match indices in connections
 	int b = edge[1] -1;
 	int w = edge[2];
-	graph[a][b] = w;
-	graph[b][a] = w;
+	connections[a][b] = w;
+	connections[b][a] = w;
 
-	cout << "added to graph["<<a<<"][" << b << "]: " << w << endl;
+	//cout << "added to connections["<<a<<"][" << b << "]: " << w << endl;
 	
 	}
 
-	cout << "fresh graph: " << endl;
-	for (int i=0; i < n; ++i) {
-		for (int j=0; j < n; ++j) {
+/*
+	cout << "fresh connections: " << endl;
+	for (int i=0; i <= n; ++i) {
+		for (int j=0; j <= n; ++j) {
 	
-			cout << graph[i][j] << " "  ;
+			cout << connections[i][j] << " "  ;
 		}
 		cout << endl;
 	}
+*/
         
 
-        int  shortest_distance = dijkstra_eval(n, graph);
+        std::deque<int>  path = dijkstra_eval(n, connections);
 
-        dijkstra_print(w, shortest_distance);}
+        //dijkstra_print(w, path);
+} // solve
 
 
 
