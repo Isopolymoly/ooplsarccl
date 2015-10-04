@@ -67,7 +67,8 @@ std::deque<int> dijkstra_eval ( int n, map<int, map<int,int> > &connections ) {
 	// *scaling* need up to 10^5 elements in arrays
 	std::vector<int> distance_to_v0;
 	std::vector<bool> done;
-	std::vector<int> via;
+	//std::vector<int> via;
+	std::map<int, int> via;
 	std::deque<int> path = {n+1}; // converting back to 1:n notation (from 0:n-1 indices)
 	//cout << "path init: " << path[0] << endl;
 
@@ -75,7 +76,7 @@ std::deque<int> dijkstra_eval ( int n, map<int, map<int,int> > &connections ) {
 
 	for (int i = 0; i <= n; i++ ) {
 		distance_to_v0.push_back(huge_number); // 2<=n<=10^5; 1 <= wi <= 10^6
-		via.push_back(huge_number); // 
+		//via.push_back(huge_number); // 
 		done.push_back(false);
 	} // for i
 
@@ -133,40 +134,22 @@ std::deque<int> dijkstra_eval ( int n, map<int, map<int,int> > &connections ) {
 	} // while true
 
 
-	//cout << "distance_to_v0ance:" << distance_to_v0[n] << endl;
-	//cout << "done n:" << done[n] << endl;
-
-
-
 	// end cornell.edu notes
-
-	//cout << "via: " ;
-	//for (int z = 0; z <= n ; z++){ cout << via[z] << " "; }
 
 
 	int step = n;
 
 	while ( step != 0 ){
-		//cout << "this step: " << step << endl;
-
-
-		if (via[step] == huge_number) {
+		if (!via.count(step)) {
 			path[0] = -1;
 			break;
 		}
-
 		path.push_front(via[step] + 1); // convert back to [1 to n] style from [0 to n-1]
 		step = via[step];
-
-
-		//cout << "next step: " << step << endl;
 	}
 
 
-
 	std::deque<int>::size_type  dq_size = path.size();
-	//cout << "dq size:" <<  dq_size << endl;
-	//cout << "path[1] :" <<  path[0] << endl;
 
 	if  ((dq_size > 1) &&  (path[0] == 1) )  {
 
