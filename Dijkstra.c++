@@ -263,7 +263,8 @@ void dijkstra_solve (istream& r, ostream& w) {
 
 
 
-		cout << "added to connections["<<a<<"][" << b << "]: " << w << endl;
+
+		//cout << "added to connections["<<a<<"][" << b << "]: " << w << endl;
 
 	}
 
