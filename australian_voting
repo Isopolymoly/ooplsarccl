@@ -1,2 +1,99 @@
 /* Australian voting problem,  10/14/2015 */
+// -------------
+// voting_print
+// -------------
+
+void voting_print (ostream& w,  std::deque<int> path) {
+
+	std::deque<int>::size_type  dq_size = path.size();
+
+	for(unsigned i=0; i < dq_size; ++i){
+		w <<  path[i]  << " ";
+	}
+	w << endl;
+}
+
+
+pair<int, int> voting_read_n_m (const string& s){
+
+	istringstream sin(s);
+	int n;
+	int m;
+	sin >> n >> m;
+	return make_pair(n,m);
+}
+
+
+std::vector<int> voting_read_a_b_w (const string& s){
+
+	istringstream sin(s);
+	int a;
+	int b;
+	int w;
+	sin >> a >> b >> w;
+
+	std::vector<int> edge = { a,b,w};
+
+	return edge;
+}
+
+
+
+// -------------
+// voting_solve
+// -------------
+
+void voting_solve (istream& r, ostream& w) {
+	std::string input_line;
+/*
+	getline(r, input_line);
+	const pair<int,int> nm = voting_read_n_m(input_line);
+	const int  n = nm.first -1;
+	const int  m = nm.second;
+*/
+
+
+/*  vector of Q's for ballots
+*   vector of ints for candidates' tallies
+*   vector of sets for groups of ballots per highest-ranked candidate
+*/
+
+std::vector<std::strings>> candidates_names;
+std::vector<queue<int>> voters_ballots;
+std::vector<int> candidate_tallies;
+std::vector<unordered_set>> highest_ranked_candidate_ballot_numbers;
+
+
+//  0.  read candidates' names, store into candidates_names vector of strings
+//  1.  read in each ballot from input stream
+//      push votes into a queue
+//            add first-ranked vote into candidates' tallies
+//                    if any candidate has > 50% of vote, delcare winner and exit early
+//            add voter number to set in first-ranked candidates's position in hrcdbn
+//      insert queue into vector at ith voter position
+//  2. find minimum of candidates' tallies
+//        return indices of candidate #'s with minimum tallies ==>  eliminated candidates
+//  3.  for each eliminated candidate
+//        zero-out candidate_tallies to indicate eliminated candidate
+//        lookup set of ballot numbers in hrc_bn
+//           foreach ballot number
+//                pop queue to bring next-highest rank to front of queue
+//                      keep popping until a non-eliminated candidate is at front of queue
+//                add new highest-rank to candidates_tallies
+//                add ballot number to set of new highest-rank candidate
+
+
+
+
+} // solve
+
+// ----
+// main
+// ----
+
+int main () {
+	using namespace std;
+	voting_solve(cin, cout);
+	return 0;
+}
 
