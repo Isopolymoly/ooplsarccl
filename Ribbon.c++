@@ -52,6 +52,7 @@ int ribbon_eval ( int n, int a, int b, int c  ) {
 	
 
 
+/*
 
 	// check unique  
 	//int limits[3] = {0,0,0};
@@ -69,6 +70,7 @@ int ribbon_eval ( int n, int a, int b, int c  ) {
 	for (unsigned int i = 0; i < abc.size(); ++i) {
 		if (n % abc[i] == 0) { return n / abc[i]; }
 	}
+*/
 
 
 
@@ -82,9 +84,11 @@ int ribbon_eval ( int n, int a, int b, int c  ) {
 	//
 	// brute force & ugly TODO permute over abc vector
 	
+/*
 	if (a == b) { y_lim = 0; }
 	if (b == c) { z_lim = 0; }
 	if (a == c) { z_lim = 0; }
+*/
 
 
 /*	
@@ -97,17 +101,20 @@ int ribbon_eval ( int n, int a, int b, int c  ) {
 
 
 	//priority_queue<int> pieces_pq;
-	vector<int> pieces_v;
+	vector<int> pieces_v = {0};
 	int sum;
 
 
 
-	// < lim here because = case has early exit above
-	for ( int x = 0 ; x < x_lim; x++ ) {
-		for ( int y = 0 ; y < y_lim; y++ ) {
+	// <= lim here because disabled  early exit above
+	//
+
+
+	for ( int x = 0 ; x <= x_lim; x++ ) {
+		for ( int y = 0 ; y <= y_lim; y++ ) {
 			if (((x*a) + (y*b)) > n) {break;}
 
-			for ( int z = 0 ; z < z_lim; z++ ) {
+			for ( int z = 0 ; z <= z_lim; z++ ) {
 
 				sum = (x*a) + (y*b) + (z*c);
 
