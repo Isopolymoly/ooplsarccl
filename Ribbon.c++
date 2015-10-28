@@ -12,7 +12,6 @@
 #include <utility>  // make_pair, pair
 #include <algorithm>  // so 198199
 #include <limits>
-//#include <deque>
 #include <vector>
 #include <unordered_map>
 #include <queue>
@@ -21,27 +20,7 @@ using namespace std;
 using std::vector;
 using std::priority_queue;
 using std::unordered_map;
-
-// mod_chunk
-// negative return values:  index of smallest factor with mod 0
-// // positive return values: 
-int mod_chunk(int chunk, vector<int> factors) {
-	int remainder;
-
-	for (unsigned int i=0; i<factors.size(); ++i){
-		remainder = chunk % factors[i];
-		//cout << chunk << " % " << factors[i] << " = " << remainder << endl;
-
-		if (remainder == 0) { 
-			remainder = -1 + (-1*i); // override with index
-			//cout << "remainder negative index: " << remainder << endl;
-			break;
-		}
-	}	
-	//cout << "returning: " << remainder << endl;
-	return remainder; // return > 0 if not perfect fit yet
-
-}
+using std::min_element;
 
 
 // ------------
@@ -52,96 +31,99 @@ int ribbon_eval ( int n, int a, int b, int c  ) {
 
 	int pieces = 0;
 
-	int ab = a + b;
-	int ac = a + c;
-	int bc = b + c;
-	int abc = a + b + c;
+	// Xa + Yb + Zc = n
+	// 	all positive integers 1<= n,a,b,c <= 4000
+	// 	so Xa can be at most n (if Y and Z == 0) ==> max X == n/a
+	// 	 Yb can be at most n (if X and Z == 0) ==> max Y == n/b
+	// 	 Zc can be at most n (if X and Z == 0) ==> max Y == n/c
+	//
 
-	vector<int>  candidates {a,b,c,ab,ac,bc,abc};
-	unordered_map<int, int>  factors_pieces { {a,1}, {b,1}, {c,1}, {ab,2}, {bc,2}, {ac,2}, {abc,3}};
+	vector<int> abc = {a,b,c};
 
-	// number of pieces for each factor
+	// pre-filter
+	//   bypass worst-case calculations
+	//   //   worst case = big n, small a,b, or c
+	if (*min_element(abc.begin(), abc.end()) == 1) { return n; }
+	if (*min_element(abc.begin(), abc.end()) == 2)  {
+			if (n % 2 ==0) { return n/2; }
+			else if (a==3 || b ==3 || c == 3)  { return (n-1)/2 ; } // all 2's except one 3
+
+	}
 	
-	//cout << "before sorting, candidates size=" << candidates.size() << endl;
-	//for (unsigned int i=0; i<candidates.size(); ++i){
-		//cout << "candidates[" << i << "]: " << candidates[i] << endl;
-	//}
 
-	std::sort ( candidates.begin(), candidates.end());
+
+
+	// check unique  
+	//int limits[3] = {0,0,0};
+
+
+	std::sort ( abc.begin(), abc.end());
 
 	std::vector<int>::iterator new_end;
-	new_end = std::unique ( candidates.begin(), candidates.end());
+	new_end = std::unique ( abc.begin(), abc.end());
 
-	candidates.resize(std::distance(candidates.begin(), new_end));
-
-	//cout << "after sorting and uniquify" << endl;
-	//for (unsigned int i=0; i<candidates.size(); ++i){
-		//cout << "candidates[" << i << "]: " << candidates[i] << endl;
-	//}
-
-	//cout << " remove candidates > n" << endl;
-	for (unsigned int i=0; i<candidates.size(); ++i){
-		if (candidates[i] > n) { 
-			candidates.erase(candidates.begin()+i); 
-		}
-	}	
-	//for (unsigned int i=0; i<candidates.size(); ++i){
-		//cout << "candidates[" << i << "]: " << candidates[i] << endl;
-	//}
+	abc.resize(std::distance(abc.begin(), new_end));
 
 
-	vector<int>  factors = candidates;
-	priority_queue<int> pieces_pq;
-
-	//cout << "next, modding" << endl;
-
-
-	int chunk = n;
-	int remainder;
-
-	remainder = 5000;  // integer > max input
-
-	for ( int i= candidates.size(); i > 0; i-- ) {
-	//cout << " loop i = " << i << endl;
-
-		while ( (remainder > 0) && (factors.size() > 0))  {
-
-		remainder = mod_chunk(chunk, factors);
-
-		// negative return values indicate index for smallest factor element with mod 0
-		if (remainder < 0) {
-			int i = (-1*remainder) -1;
-			pieces += factors_pieces[factors[i]] * ( chunk / factors[i]);
-			pieces_pq.push(pieces);
-			//cout << " pushing pieces: " << pieces << endl;
-			// reset for next round
-			remainder=5000;
-			pieces=0;
-			break;
-		} else {
-			// account for these pieces, then pop off the end of factors and keep going
-			pieces +=  factors_pieces[factors.back()] * (chunk / factors.back() ); // integer division
-			//chunk = factors.back();
-			chunk = remainder;
-			factors.pop_back();
-		}
+	// if n is divisible by a, b, or c, return n div the smallest of those (ordered smallest to largest here, break early)
+	for (unsigned int i = 0; i < abc.size(); ++i) {
+		if (n % abc[i] == 0) { return n / abc[i]; }
+	}
 
 
-	} // while remainder > 0
 
-	// either check for break condition here, or don't touch pieces (and allow others to be corrupt here)
 
+	int x_lim = n / a;
+	int y_lim = n / b;
+	int z_lim = n / c;
+
+
+	// if a==b==c, early exit with mod prior to this point
+	//
+	// brute force & ugly TODO permute over abc vector
 	
-	// remove biggest element of factor and start over again
-	candidates.pop_back();
-	factors = candidates;
-	chunk = n;
+	if (a == b) { y_lim = 0; }
+	if (b == c) { z_lim = 0; }
+	if (a == c) { z_lim = 0; }
 
-	} // for i= factors.size()  --> 0
 
+/*	
+	if( ((a!=c) && (c % a == 0)) || ( (c !=b) && (c % b == 0))  { z_lim = 0;}
+	if( (b % a == 0) || (b % c == 0))  { y_lim = 0;}
+	if( (a % b == 0) || (a % c == 0))  { x_lim = 0;}
+
+*/
+
+
+
+	//priority_queue<int> pieces_pq;
+	vector<int> pieces_v;
+	int sum;
+
+
+
+	// < lim here because = case has early exit above
+	for ( int x = 0 ; x < x_lim; x++ ) {
+		for ( int y = 0 ; y < y_lim; y++ ) {
+			if (((x*a) + (y*b)) > n) {break;}
+
+			for ( int z = 0 ; z < z_lim; z++ ) {
+
+				sum = (x*a) + (y*b) + (z*c);
+
+				if (sum == n) {
+					pieces = x + y + z;
+					//pieces_pq.push(pieces);
+					pieces_v.push_back(pieces);
+				}
+				else if (sum > n) { break;} // 
+			} // z
+		} // y
+	} // x
 	
 
-	return pieces_pq.top();
+	//return pieces_pq.top();
+	return *max_element(pieces_v.begin(), pieces_v.end());
 
 } // ribbon eval
 
