@@ -29,9 +29,6 @@ int mod_chunk(int chunk, vector<int> factors) {
 	int remainder;
 
 	for (unsigned int i=0; i<factors.size(); ++i){
-
-		//cout << "mod_chunk factors[" << i << "]: " << factors[i] << endl;
-
 		remainder = chunk % factors[i];
 		//cout << chunk << " % " << factors[i] << " = " << remainder << endl;
 
@@ -105,6 +102,7 @@ int ribbon_eval ( int n, int a, int b, int c  ) {
 	remainder = 5000;  // integer > max input
 
 	for ( int i= candidates.size(); i > 0; i-- ) {
+	//cout << " loop i = " << i << endl;
 
 		while ( (remainder > 0) && (factors.size() > 0))  {
 
@@ -115,11 +113,16 @@ int ribbon_eval ( int n, int a, int b, int c  ) {
 			int i = (-1*remainder) -1;
 			pieces += factors_pieces[factors[i]] * ( chunk / factors[i]);
 			pieces_pq.push(pieces);
+			//cout << " pushing pieces: " << pieces << endl;
+			// reset for next round
+			remainder=5000;
+			pieces=0;
 			break;
 		} else {
 			// account for these pieces, then pop off the end of factors and keep going
 			pieces +=  factors_pieces[factors.back()] * (chunk / factors.back() ); // integer division
-			chunk = factors.back();
+			//chunk = factors.back();
+			chunk = remainder;
 			factors.pop_back();
 		}
 
