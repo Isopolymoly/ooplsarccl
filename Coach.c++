@@ -31,7 +31,13 @@ using std::vector;
 	int teams [16][3] = {0}; // print 
 	int next_team = 0;
 	bool success = 1;
-	vector<bool> used = {0};
+	vector<bool> used;
+
+
+	// force init -- getting different answers locally and with online judge's compile
+	for (int i=1; i <= n; ++i){
+		used.push_back(0);
+	}
 	
 
 	//cout << "inside eval" << endl;
@@ -45,7 +51,10 @@ using std::vector;
 
 	bool done;
 
-	for (auto const &entry : buddies){
+	// removing c11-ish code to see what's causing compile errs, diff answers in online judge
+	//for (auto const &entry : buddies) {
+	for (size_t l=0; l < buddies.size(); l++ ) {
+		pair<int,int> entry = buddies[l];
 		//cout << "buddy list: " << entry.first << ", " << entry.second << endl;
 
 		
@@ -66,6 +75,7 @@ using std::vector;
 							//cout << "found empty spot at [" << i << "][" << j << "]" << endl; 
 							teams[i][k] = entry.second; 
 							used[entry.second] = 1;
+							//cout << "updating used[" << entry.second << "]";
 							done = 1;
 							break;
 						} // 
@@ -93,8 +103,8 @@ using std::vector;
 
 } // for each buddies element  (pair a,b)
 // TODO fill in un-paired c's cout << "c's left to fill in: " << endl; 
-// for (int i =0; i<=n; i++) {
-// cout << used [i] << " ";
+ //for (int i =0; i<=n; i++) {
+ //cout << used [i] << " ";
 	//}
 //cout << endl;
 
