@@ -30,6 +30,7 @@ using std::vector;
 
 	int teams [16][3] = {0}; // print 
 	int next_team = 0;
+	int team_limit = n / 3;
 	bool success = 1;
 	vector<bool> used;
 
@@ -84,8 +85,6 @@ using std::vector;
 					}
 
 
-				
-
 					if (!done) {
 					//  team is full with extra pair; exit with -1
 					success = 0;
@@ -96,6 +95,9 @@ using std::vector;
 				} // matching team
 			} // for j
 		} // for i
+
+		// no more fresh teams left to handle a new pair
+		if (next_team >= team_limit) { success=0;  break;}
 
 		// start new team
 		if (success && !done) {
@@ -115,6 +117,7 @@ using std::vector;
 //cout << endl;
 
 
+if (success) {
 // used[0] is initialized to zero and doesn't change;
 // using 1<=n for indices to match team member numbers
 for (int c=1; c <=n ; c++){
@@ -141,11 +144,12 @@ for (int c=1; c <=n ; c++){
 
 }
 
+}
 
 /////////////////////////////
 if (success) {
 
-	for(int i=0; i < n/3; ++i){
+	for(int i=0; i < team_limit; ++i){
 		//cout << "team" << i << ": " ;
 		for(int j=0; j < 3; ++j){
 			cout <<  teams[i][j]  << " ";
