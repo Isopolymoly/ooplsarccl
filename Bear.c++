@@ -47,24 +47,19 @@ int bear_mod (int m, int bid){
 int bear_mod23 (int bid){
 	int lowest = bid;
 
-	int mod2=0;
-	int mod3=0;
-
 	while (lowest >=3) {
-		mod2 = 0;
-		mod3 = 0;
 
-		if (lowest % 2 == 0)  { mod2 = lowest / 2; }
-		if (lowest % 3 == 0)  { mod3 = lowest / 3; }
+		if (lowest % 2 == 0)  { lowest = lowest / 2;  }
+		if (lowest % 3 == 0)  { lowest = lowest / 3; }
+
 
 		//cout << "lowest: " << lowest ;
 		//cout << " mod2: " << mod2 ;
 		//cout << " mod3: " << mod3 << endl;
 
-		if ((lowest % 2 ==0) || (lowest % 3 ==0)) {
-			lowest = max(mod2, mod3);
-
-		} else { break; }
+		if ((lowest % 2 !=0) && (lowest % 3 !=0)) {
+			break;
+		} 
 
 	} // while loop
 
