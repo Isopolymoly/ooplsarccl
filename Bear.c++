@@ -1,10 +1,10 @@
 // ----------------------------
-// Coach.c++
+// Bear.c++
 // Copyright (C) 2015
 // based on Collatz.c++ by Glenn P. Downing
 // ----------------------------
 
-// 000
+// 002
 
 #include <cassert>  // assert
 #include <iostream> // endl, istream, ostream
