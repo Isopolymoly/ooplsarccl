@@ -46,20 +46,16 @@ int bear_mod (int m, int bid){
 
 int bear_mod23 (int bid){
 	int lowest = bid;
+	//cout << "bid: " << bid;
 
-	while (lowest >=3) {
+		while ((lowest % 2 ==0) || (lowest % 3 ==0)) {
 
 		if (lowest % 2 == 0)  { lowest = lowest / 2;  }
 		if (lowest % 3 == 0)  { lowest = lowest / 3; }
 
 
-		//cout << "lowest: " << lowest ;
-		//cout << " mod2: " << mod2 ;
-		//cout << " mod3: " << mod3 << endl;
+		//cout << "lowest: " << lowest << endl; ;
 
-		if ((lowest % 2 !=0) && (lowest % 3 !=0)) {
-			break;
-		} 
 
 	} // while loop
 
