@@ -12,15 +12,10 @@
 #include <utility>  // make_pair, pair
 #include <algorithm>  // so 198199
 #include <limits>
-#include <deque>
 #include <vector>
-#include <map>
-#include <unordered_map>
 
 using namespace std;
 using std::vector;
-using std::map;
-using std::unordered_map;
 
 /* References:
  * cplusplus.com
