@@ -57,6 +57,7 @@ using std::vector;
 		pair<int,int> entry = buddies[l];
 		//cout << "buddy list: " << entry.first << ", " << entry.second << endl;
 
+
 		
 		done=0;
 
@@ -70,6 +71,7 @@ using std::vector;
 					//cout << "found team at " << teams[i][j] << endl;
 
 					for (int k = j+1; k <=2; k++) {
+						if (teams[i][k] == entry.second) { done=1; break;}	
 
 						if (teams[i][k] == 0) { 
 							//cout << "found empty spot at [" << i << "][" << j << "]" << endl; 
@@ -80,6 +82,10 @@ using std::vector;
 							break;
 						} // 
 					}
+
+
+				
+
 					if (!done) {
 					//  team is full with extra pair; exit with -1
 					success = 0;
