@@ -70,14 +70,16 @@ void coach_eval ( int n, vector< pair<int,int> > &buddies ) {
 		for (int i =0; i < 16; ++i){
 		  for (int j =0; j <= 2; ++j){
 		//cout << "checking for " << entry.first << " in teams[" << i << "][" << j << "]" << endl;
+		//cout << "  teams[" << i << "][" << j << "] = " << teams[i][j] << endl;
 
 		     if (entry.first == teams[i][j]) { // found team; now look for empty spot or already entered
-			for (int k = j+1; k <=2; k++) {
+			for (int k = 0; k <=2; k++) {
 				//cout << "i: " << i << " j: " << j << " k: " << k  << endl;
 
 				if (teams[i][k] == entry.second) { done=1; 
 						//cout << "found it" << endl; 
 						 break;}	
+
 				if (teams[i][k] == 0) { 
 					teams[i][k] = entry.second; 
 					used[entry.second] = 1;
