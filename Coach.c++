@@ -4,6 +4,8 @@
 // based on Collatz.c++ by Glenn P. Downing
 // ----------------------------
 
+// 300b
+
 #include <cassert>  // assert
 #include <iostream> // endl, istream, ostream
 #include <sstream>  // istringstream
@@ -26,20 +28,28 @@ using std::vector;
 // coach_eval
 // ------------
 
- void coach_eval ( int n, vector< pair<int,int> > &buddies ) {
+void coach_eval ( int n, vector< pair<int,int> > &buddies ) {
 
 	int teams [16][3] = {0}; // print 
 	int next_team = 0;
-	int team_limit = n / 3;
+	const int team_limit = n / 3;
 	bool success = 1;
 	vector<bool> used;
 
+	//cout << " team limit: " << team_limit << endl;
 
-	// force init -- getting different answers locally and with online judge's compile
+
+	// init
 	for (int i=1; i <= n; ++i){
 		used.push_back(0);
 	}
-	
+
+	for (int i=0; i < 16; ++i){
+		for (int j=0; j <= 2; ++j){
+		teams[i][j] = 0;
+		}
+	}
+
 
 	//cout << "inside eval" << endl;
 
@@ -53,116 +63,117 @@ using std::vector;
 	bool done;
 
 	// removing c11-ish code to see what's causing compile errs, diff answers in online judge
-	//for (auto const &entry : buddies) {
-	for (size_t l=0; l < buddies.size(); l++ ) {
-		pair<int,int> entry = buddies[l];
+	for (auto const &entry : buddies) {
 		//cout << "buddy list: " << entry.first << ", " << entry.second << endl;
-
-
-		
 		done=0;
 
 		for (int i =0; i < 16; ++i){
-			for (int j =0; j <= 2; ++j){
-				//cout << "checking for " << entry.first << " in teams[" << i << "][" << j << "]" << endl;
+		  for (int j =0; j <= 2; ++j){
+		//cout << "checking for " << entry.first << " in teams[" << i << "][" << j << "]" << endl;
 
-				if (entry.first == teams[i][j]) {
-					// found team; now look for empty spot
+		     if (entry.first == teams[i][j]) { // found team; now look for empty spot or already entered
+			for (int k = j+1; k <=2; k++) {
+				//cout << "i: " << i << " j: " << j << " k: " << k  << endl;
 
-					//cout << "found team at " << teams[i][j] << endl;
+				if (teams[i][k] == entry.second) { done=1; 
+						//cout << "found it" << endl; 
+						 break;}	
+				if (teams[i][k] == 0) { 
+					teams[i][k] = entry.second; 
+					used[entry.second] = 1;
+					done = 1;
+					//cout << "added it" << endl;
+					break;
+					} // 
+			} // k
 
-					for (int k = j+1; k <=2; k++) {
-						if (teams[i][k] == entry.second) { done=1; break;}	
-
-						if (teams[i][k] == 0) { 
-							//cout << "found empty spot at [" << i << "][" << j << "]" << endl; 
-							teams[i][k] = entry.second; 
-							used[entry.second] = 1;
-							//cout << "updating used[" << entry.second << "]";
-							done = 1;
-							break;
-						} // 
+			if (!done) {
+				//  team is full with extra pair; exit with -1
+				success = 0;
+				break; 
 					}
-
-
-					if (!done) {
-					//  team is full with extra pair; exit with -1
-					success = 0;
- 					break; 
-					}
-
-
 				} // matching team
 			} // for j
 		} // for i
 
+		//cout << " next_team: " << next_team << endl;
+		//cout << " team_limit: " << team_limit << endl;
+
 		// no more fresh teams left to handle a new pair
-		if (next_team >= team_limit) { success=0;  break;}
+		if ((!done) & (next_team >= team_limit)) { 
+			success=0;
+			 //cout << " full." << endl;  
+			break;
+			}
+
+		//cout << " make new team" << endl;
 
 		// start new team
 		if (success && !done) {
-		teams[next_team][0] = entry.first;
-		used[entry.first] = 1;
-		teams[next_team][1] = entry.second;
-		used[entry.second] = 1;
-		++next_team;
-		done  = 1;
+			teams[next_team][0] = entry.first;
+			used[entry.first] = 1;
+			teams[next_team][1] = entry.second;
+			used[entry.second] = 1;
+			++next_team;
+			done  = 1;
 		}
 
-} // for each buddies element  (pair a,b)
-// TODO fill in un-paired c's cout << "c's left to fill in: " << endl; 
- //for (int i =0; i<=n; i++) {
- //cout << used [i] << " ";
+	} // for each buddies element  (pair a,b)
+	// TODO fill in un-paired c's cout << "c's left to fill in: " << endl; 
+	//for (int i =0; i<=n; i++) {
+	//cout << used [i] << " ";
 	//}
-//cout << endl;
+	//cout << endl;
 
 
-if (success) {
-// used[0] is initialized to zero and doesn't change;
-// using 1<=n for indices to match team member numbers
-for (int c=1; c <=n ; c++){
-  if (!used[c]){
-	done = 0;
-	//cout << "looking for spot for " << c << endl;
-	// find an open spot for this c
-		for (int i =0; i < 16; ++i){
-			for (int j =0; j <= 2; ++j){
+	if (success) {
+		// used[0] is initialized to zero and doesn't change;
+		// using 1<=n for indices to match team member numbers
+		for (int c=1; c <=n ; c++){
+			//cout << "success:  " << success << "c: " << c << endl; 
+			if (!used[c]){
+				done = 0;
+				//cout << "looking for spot for " << c << endl;
+				// find an open spot for this c
+				for (int i =0; i < 16; ++i){
+				//cout << "i " << i << endl;
+					for (int j =0; j <= 2; ++j){
+						//cout << "j " << j << endl;
 
-			  if (teams[i][j] == 0){
-				//cout << "found spot at teams[" << i << "][" << j << "]" << endl;
-				teams[i][j] = c;
-				used[c] = 1;
-				done = 1;
-				break;
-				}
+						if (teams[i][j] == 0){
+							//cout << "found spot at teams[" << i << "][" << j << "]" << endl;
+							teams[i][j] = c;
+							used[c] = 1;
+							done = 1;
+							break;
+						} // for teams==0
+					} // for j
+					if (done) {break;}
+				} // for i
+			} // not used[c]
+		} // for c
+	} // success
+
+
+	//cout << " after search, success: " << success << endl;
+
+	/////////////////////////////
+	if (success) {
+	//cout << " print teams  " << endl;
+
+		for(int i=0; i < team_limit; ++i){
+			//cout << "team" << i << ": " ;
+			for(int j=0; j < 3; ++j){
+				cout <<  teams[i][j]  << " ";
 			}
-			if (done) {break;}
-}
-
-
-  }
-
-}
-
-}
-
-/////////////////////////////
-if (success) {
-
-	for(int i=0; i < team_limit; ++i){
-		//cout << "team" << i << ": " ;
-		for(int j=0; j < 3; ++j){
-			cout <<  teams[i][j]  << " ";
+			cout << endl;
 		}
-		cout << endl;
+	} else {
+		cout << "-1" << endl;
 	}
-} else {
-	cout << "-1" << endl;
-}
 
 
 
-//return success;
 
 } // coach eval
 
